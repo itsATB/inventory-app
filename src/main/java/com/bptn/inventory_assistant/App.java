@@ -35,6 +35,7 @@ public class App {
 			System.out.println("8. AI: Generate Sales Summary & Forecast");
 			System.out.println("9. AI: Generate Promotional Tagline for a Product");
 		}
+		System.out.println("10. Export Inventory to CSV");
 		System.out.println("0. Exit");
 
 	}
@@ -51,7 +52,7 @@ public class App {
 		while (running) {
 			printMenu();
 
-			int maxOption = openAIService.isAIAvailable() ? 9 : 7;
+			int maxOption = 10; //openAIService.isAIAvailable() ? 9 : 7;
 
 			int choice = Util.getIntInRange("Enter your choice: ", 0, maxOption);
 			if (!openAIService.isAIAvailable() && (choice == 8 || choice == 9)) {
@@ -70,6 +71,7 @@ public class App {
 				case 7 -> deleteProduct();
 				case 8 -> generateAISalesSummary();
 				case 9 -> generateAIPromoTagline();
+				case 10 -> exportInventoryToCSV();
 				case 0 -> {
 					running = false;
 					System.out.println("Exiting system. Goodbye!");
@@ -246,6 +248,11 @@ public class App {
 		} catch (ProductNotFoundException e) {
 			printWarning("Error: " + e.getMessage());
 		}
+	}
+
+	private static void exportInventoryToCSV() {
+		printSuccess("\n--- Export Inventory to CSV ---");
+		inventoryService.exportInventoryToCSV("inventory_export.csv");		
 	}
 
 	private static void generateAIPromoTagline() {

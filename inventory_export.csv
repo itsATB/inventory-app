@@ -1,0 +1,6 @@
+productId,name,category,purchasePrice,sellingPrice,quantityInStock,supplier
+PROD-1000,Laptop X200,ELECTRONICS,800.0,1200.0,10,TechSupplier Inc.
+PROD-1001,Organic Apples,GROCERIES,1.0,2.5,50,FarmFresh Co.
+PROD-1002,Java Programming Book,BOOKS,20.0,45.0,25,EduPublishers
+PROD-1003,Smart Watch Z,ELECTRONICS,150.0,250.0,15,GadgetGlobal
+PROD-1004,Playstation 5,ELECTRONICS,600.0,1000.0,8,Sony Corporation

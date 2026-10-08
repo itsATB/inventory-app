@@ -9,6 +9,10 @@ import com.bptn.inventory_assistant.util.IdGenerator;
 import static com.bptn.inventory_assistant.util.Util.printWarning;
 import static com.bptn.inventory_assistant.util.Util.printSuccess;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -195,6 +199,58 @@ public class InventoryService {
 				.orElseThrow(() -> new ProductNotFoundException("Product ID " + productId + " not found. "));
 		products.remove(p);
 		System.out.printf("Product deleted: %s (ID: %s)%n ", p.getName(), p.getProductId());
+	}
+
+
+	/**
+	 * Exports the current inventory to a CSV file.
+	 * 
+	 * @param filePath The path to the output CSV file.
+	 */
+	public void exportInventoryToCSV(String filePath) {
+		List<String> lines = new ArrayList<>();
+		lines.add("productId,name,category,purchasePrice,sellingPrice,quantityInStock,supplier");
+
+		for (Product product : getAllProducts()) {
+			String category = product.getCategory() == null
+					? ""
+					: product.getCategory().name();
+
+			lines.add(String.join(",",
+					csvEscape(product.getProductId()),
+					csvEscape(product.getName()),
+					csvEscape(category),
+					csvEscape(String.valueOf(product.getPurchasePrice())),
+					csvEscape(String.valueOf(product.getSellingPrice())),
+					csvEscape(String.valueOf(product.getQuantityInStock())),
+					csvEscape(product.getSupplier())));
+		}
+
+		Path outputFile = Path.of(filePath);
+
+		try {
+			Files.write(outputFile, lines, StandardCharsets.UTF_8);
+			printSuccess("Inventory exported to: " + outputFile.toAbsolutePath());
+		} catch (IOException e) {
+			printWarning("Error exporting inventory to CSV: " + e.getMessage());
+		}		
+	}
+
+	/**
+	 * Correctly escapes a string to help with formatting, for use in a CSV file.
+	 *
+	 * @param value The string to escape.
+	 * @return The escaped string.
+	 */
+	private static String csvEscape(String value) {
+		if (value == null) {
+			return "";
+		}
+		if (value.contains(",") || value.contains("\"") || value.contains("\n")) {
+			value = value.replace("\"", "\"\"");
+			return "\"" + value + "\"";
+		}
+		return value;
 	}
 
 }
